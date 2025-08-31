@@ -9,6 +9,7 @@ build
 .env
 # BlueJ files
 *.ctxt
+database.db
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

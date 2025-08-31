@@ -3,6 +3,23 @@ server:
 
 tuya:
   api-base-url: http://localhost:8110
+dashboard:
+  api-base-url: http://localhost:8090
+
+spring:
+  datasource:
+    url: jdbc:sqlite:database.db
+    driver-class-name: org.sqlite.JDBC
+    username:
+    password:
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
 
 ---
 
@@ -11,5 +28,16 @@ spring:
     activate:
       on-profile: mock-tuya
 
+
+
 tuya:
+  api-base-url: http://localhost:8111/mock
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: mock-dashboard
+dashboard:
   api-base-url: http://localhost:8111/mock

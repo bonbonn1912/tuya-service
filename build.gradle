@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.0-SNAPSHOT'
+	id 'org.springframework.boot' version '3.5.5'
 	id 'io.spring.dependency-management' version '1.1.7'
     id 'org.openapi.generator' version '7.14.0'
     id 'maven-publish'
@@ -30,6 +30,13 @@ configurations {
 repositories {
 	mavenCentral()
 	maven { url = 'https://repo.spring.io/snapshot' }
+    maven {
+        url = uri("https://maven.pkg.github.com/bonbonn1912/open-api-code-gen")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 dependencies {
@@ -37,11 +44,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // SQLite JDBC Treiber
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+// https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-community-dialects
+    implementation 'org.hibernate.orm:hibernate-community-dialects:6.6.27.Final'
     compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.openapitools:jackson-databind-nullable:0.2.6"
-
+    implementation "com.bonbonn:springboot-starter-spring-rest-client:1.0.0"
     // MapStruct
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'

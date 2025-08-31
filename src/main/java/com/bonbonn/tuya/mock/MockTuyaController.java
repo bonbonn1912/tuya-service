@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/mock/api")
 @Profile("mock-tuya")
-public class MockController {
+public class MockTuyaController {
 
 
   @GetMapping("/electricity-meter")
