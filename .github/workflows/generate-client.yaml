@@ -37,7 +37,7 @@ jobs:
           echo "📂 Inhalt von ../tuya-service/src/main/resources/static/:"
           ls -l ../tuya-service/src/main/resources/static/
           ./gradlew publish \
-            -PclientName=a \
+            -PclientName=tuya-service \
             -PinputSpec=../tuya-service/src/main/resources/static/tuya.consumer.openapi.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
