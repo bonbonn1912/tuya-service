@@ -32,6 +32,10 @@ jobs:
       - name: Generate & Publish Client
         run: |
           cd api-clients
+          echo "📂 Inhalt von api-clients/:"
+          ls -l
+          echo "📂 Inhalt von ../tuya-service/src/main/resources/static/:"
+          ls -l ../tuya-service/src/main/resources/static/
           ./gradlew publish \
             -PclientName=a \
             -PinputSpec=../tuya-service/src/main/resources/static/tuya.consumer.openapi.yaml
