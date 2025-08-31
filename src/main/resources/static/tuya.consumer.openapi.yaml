@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  title: Provides Tuya Data
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:8110
+
+tags:
+  - name: Tuya
+
+paths:
+  /api/regulator:
+    get:
+      tags:
+        - Tuya
+      summary: Provides the latest values of the regulators
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  regulator_leda:
+                    $ref: "#/components/schemas/Regulator"
+                  regulator_roth:
+                    $ref: "#/components/schemas/Regulator"
+
+  /api/electricity_meter:
+    get:
+      tags:
+        - Tuya
+      summary: Provides the latest values of the electricity meter
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ElectricityMeter"
+
+components:
+  schemas:
+    Regulator:
+      type: object
+      properties:
+        T1:
+          $ref: "#/components/schemas/Value"
+        T2:
+          $ref: "#/components/schemas/Value"
+        T3:
+          $ref: "#/components/schemas/Value"
+        last_update:
+          $ref: "#/components/schemas/TimeStamp"
+
+    ElectricityMeter:
+      type: object
+      nullable: false
+      properties:
+        value:
+          $ref: "#/components/schemas/Value"
+        last_update:
+          $ref: "#/components/schemas/TimeStamp"
+
+    Value:
+      type: number
+      nullable: false
+      example: 25
+
+    TimeStamp:
+      type: string
+      nullable: false
+      format: date-time
+      example: "2025-08-30 08:00:00"

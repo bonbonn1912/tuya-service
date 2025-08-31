@@ -1,0 +1,114 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.0-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.openapi.generator' version '7.14.0'
+    id 'maven-publish'
+}
+
+group = 'com.bonbonn'
+version = '1.0.0-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url = 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.openapitools:jackson-databind-nullable:0.2.6"
+
+    // MapStruct
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/static/tuya.consumer.openapi.yaml".toString()
+    outputDir = "$buildDir/generated".toString()
+    apiPackage = "com.bonbonn.tuya.api"
+    modelPackage = "com.bonbonn.tuya.model"
+    invokerPackage = "com.bonbonn.invoker"
+    configOptions = [
+            library               : "spring-boot",
+            useJakartaEe          : "true",
+            interfaceOnly         : "true",
+            useTags               : "true",
+            openApiNullable       : "false",
+            skipDefaultInterface  : "true",
+            dateLibrary           : "java8"
+    ]
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "$buildDir/generated/src/main/java"
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn tasks.named('openApiGenerate')
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('openApiGenerate')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/bonbonn1912/tuya-service")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}

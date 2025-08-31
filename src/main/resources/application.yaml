@@ -1,0 +1,15 @@
+server:
+  port: 8111
+
+tuya:
+  api-base-url: http://localhost:8110
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: mock-tuya
+
+tuya:
+  api-base-url: http://localhost:8111/mock
